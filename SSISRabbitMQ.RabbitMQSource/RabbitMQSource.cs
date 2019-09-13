@@ -130,7 +130,7 @@ namespace SSISRabbitMQ.RabbitMQSource
       IDTSOutput100 output = ComponentMetaData.OutputCollection[0];
       PipelineBuffer buffer = buffers[0];
 
-      object message;
+      BasicDeliverEventArgs message;
       bool success;
 
       while (queueConsumer.IsRunning)

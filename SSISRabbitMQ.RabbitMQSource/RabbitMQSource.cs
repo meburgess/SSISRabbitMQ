@@ -29,14 +29,14 @@ namespace SSISRabbitMQ.RabbitMQSource
             base.RemoveAllInputsOutputsAndCustomProperties();
             ComponentMetaData.RuntimeConnectionCollection.RemoveAll();
 
-            var output = ComponentMetaData.OutputCollection.New();
+            IDTSOutput100 output = ComponentMetaData.OutputCollection.New();
             output.Name = "Output";
 
-            var queueName = ComponentMetaData.CustomPropertyCollection.New();
+            IDTSCustomProperty100 queueName = ComponentMetaData.CustomPropertyCollection.New();
             queueName.Name = "QueueName";
             queueName.Description = "The name of the RabbitMQ queue to read messages from";
 
-            var connection = ComponentMetaData.RuntimeConnectionCollection.New();
+            IDTSRuntimeConnection100 connection = ComponentMetaData.RuntimeConnectionCollection.New();
             connection.Name = "RabbitMQ";
             connection.ConnectionManagerID = "RabbitMQ";
 
@@ -45,16 +45,16 @@ namespace SSISRabbitMQ.RabbitMQSource
 
         private void CreateColumns()
         {
-            var output = ComponentMetaData.OutputCollection[0];
+            IDTSOutput100 output = ComponentMetaData.OutputCollection[0];
 
             output.OutputColumnCollection.RemoveAll();
             output.ExternalMetadataColumnCollection.RemoveAll();
 
-            var column1 = output.OutputColumnCollection.New();
-            var exColumn1 = output.ExternalMetadataColumnCollection.New();
+            IDTSOutputColumn100 column1 = output.OutputColumnCollection.New();
+            IDTSExternalMetadataColumn100 exColumn1 = output.ExternalMetadataColumnCollection.New();
 
-            var column2 = output.OutputColumnCollection.New();
-            var exColumn2 = output.ExternalMetadataColumnCollection.New();
+            IDTSOutputColumn100 column2 = output.OutputColumnCollection.New();
+            IDTSExternalMetadataColumn100 exColumn2 = output.ExternalMetadataColumnCollection.New();
 
             column1.Name = "MessageContents";
             column1.SetDataTypeProperties(DataType.DT_WSTR, 4000, 0, 0, 0);
@@ -122,10 +122,10 @@ namespace SSISRabbitMQ.RabbitMQSource
             IDTSOutput100 output = ComponentMetaData.OutputCollection[0];
             PipelineBuffer buffer = buffers[0];
 
-            var result = consumerChannel.BasicGet(queueName, true);
+            BasicGetResult result = consumerChannel.BasicGet(queueName, true);
             while (result != null)
             {
-                var messageContent = Encoding.UTF8.GetString(result.Body);
+                string messageContent = Encoding.UTF8.GetString(result.Body);
 
                 buffer.AddRow();
                 buffer[0] = messageContent;
